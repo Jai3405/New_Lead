@@ -44,7 +44,7 @@ export default function Home() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Put your campaign in VITRO.</span>
             </h1>
             <p className="text-xl md:text-2xl text-zinc-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Scientific forensics for the creator economy. <br/>
+              Predictive intelligence for the creator economy. <br/>
               Vet instantly. Track clinically. Optimize ruthlessly.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -82,7 +82,7 @@ export default function Home() {
             </div>
             <div className="p-6">
               <div className="text-5xl font-bold text-indigo-600 mb-2">100%</div>
-              <p className="text-zinc-500 font-medium">Forensic accuracy with VITRO</p>
+              <p className="text-zinc-500 font-medium">Predictive accuracy with VITRO</p>
             </div>
           </div>
         </div>
@@ -161,8 +161,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               icon={<ShieldAlert className="h-8 w-8 text-indigo-600" />}
-              title="Forensic Audit"
-              description="Proprietary ML engine that detects Benford's Law violations and entropy anomalies in real-time."
+              title="AI-Powered Vetting"
+              description="Detect anomalies, bot patterns, and engagement purity using advanced machine learning models."
             />
             <FeatureCard 
               icon={<TrendingUp className="h-8 w-8 text-indigo-600" />}

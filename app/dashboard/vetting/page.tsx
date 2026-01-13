@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ShieldCheck, ShieldAlert, Users, CheckCircle2, AlertOctagon, TrendingUp, Microscope, Binary, Sigma, DollarSign, Palette, Lightbulb, Tag } from "lucide-react";
+import { Search, ShieldCheck, ShieldAlert, Users, CheckCircle2, AlertOctagon, TrendingUp, Scan, BrainCircuit, Activity, DollarSign, Palette, Lightbulb, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, CartesianGrid, Legend, ReferenceLine } from 'recharts';
 import Link from "next/link";
@@ -48,7 +48,7 @@ export default function VettingPage() {
         fakeFollowers: 90000,
         engagementRate: "1.2%",
         avgLikes: "1,500",
-        flags: ["Benford's Law Violation", "Low Entropy Comments (Bots)", "Engagement Pods"],
+        flags: ["Distribution Anomaly", "Low Complexity Comments", "Engagement Pods"],
         growthData: [
             { month: 'Jan', followers: 45000 },
             { month: 'Feb', followers: 46000 },
@@ -109,7 +109,7 @@ export default function VettingPage() {
           <Button 
             type="submit" 
             disabled={analyzing}
-            className="h-auto px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-lg"
+            className="h-auto px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-lg"
           >
             {analyzing ? "Scanning..." : "Analyze Profile"}
           </Button>
@@ -133,7 +133,7 @@ export default function VettingPage() {
             <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold text-zinc-700">Audience Quality</h3>
-                <Users className="text-blue-500" />
+                <Users className="text-indigo-500" />
               </div>
               <div className="text-4xl font-bold text-zinc-900 mb-1">{result.audienceQuality}%</div>
               <p className="text-sm text-zinc-500">Real, active humans</p>
@@ -152,15 +152,15 @@ export default function VettingPage() {
             </div>
           </div>
 
-          {/* DEEP FORENSIC AUDIT (New Tech-Heavy Section) */}
+          {/* ADVANCED SIGNAL ANALYSIS (High-Tech ML Layer) */}
           <div className="bg-zinc-900 text-white p-8 rounded-3xl shadow-xl border border-zinc-800">
              <div className="flex items-center gap-3 mb-8">
                  <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400">
-                     <Microscope size={24} />
+                     <Scan size={24} />
                  </div>
                  <div>
-                     <h2 className="text-xl font-bold">Deep Forensic Audit</h2>
-                     <p className="text-zinc-400 text-sm">Algorithmic analysis of underlying data patterns (SciPy/NumPy).</p>
+                     <h2 className="text-xl font-bold">Advanced Signal Analysis</h2>
+                     <p className="text-zinc-400 text-sm">Multi-vector ML analysis of audience quality and engagement velocity.</p>
                  </div>
              </div>
 
@@ -169,7 +169,7 @@ export default function VettingPage() {
                  <div>
                      <div className="flex items-center justify-between mb-4">
                          <h3 className="font-semibold flex items-center gap-2">
-                             <Sigma size={16} className="text-blue-400"/> Benford's Law Analysis
+                             <Activity size={16} className="text-blue-400"/> Distribution Anomaly Detection
                          </h3>
                          <span className={`text-xs px-2 py-1 rounded font-bold ${result.forensics.benfordSuspicious ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                              {result.forensics.benfordSuspicious ? 'ANOMALY DETECTED' : 'NATURAL'}
@@ -198,7 +198,7 @@ export default function VettingPage() {
                  <div>
                      <div className="flex items-center justify-between mb-4">
                          <h3 className="font-semibold flex items-center gap-2">
-                             <Binary size={16} className="text-green-400"/> Shannon Entropy (Language)
+                             <BrainCircuit size={16} className="text-green-400"/> Engagement Complexity Score
                          </h3>
                          <span className={`text-xs px-2 py-1 rounded font-bold ${result.forensics.entropyVerdict === 'Organic' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                              {result.forensics.entropyVerdict.toUpperCase()}
@@ -235,14 +235,14 @@ export default function VettingPage() {
           </div>
 
           {/* STRATEGIC AI ANALYSIS */}
-          <div className="bg-gradient-to-br from-blue-900 to-indigo-900 text-white p-8 rounded-3xl shadow-xl">
+          <div className="bg-gradient-to-br from-indigo-900 to-violet-900 text-white p-8 rounded-3xl shadow-xl">
              <div className="flex items-center gap-3 mb-8">
-                 <div className="p-2 bg-blue-400/20 rounded-lg text-blue-300">
+                 <div className="p-2 bg-indigo-400/20 rounded-lg text-indigo-300">
                      <Lightbulb size={24} />
                  </div>
                  <div>
                      <h2 className="text-xl font-bold">Strategic AI Analysis</h2>
-                     <p className="text-blue-200 text-sm">Business intelligence powered by Linear Regression & NLP.</p>
+                     <p className="text-indigo-200 text-sm">Business intelligence powered by Linear Regression & NLP.</p>
                  </div>
              </div>
 
@@ -254,7 +254,7 @@ export default function VettingPage() {
                      </h3>
                      
                      <div className="flex items-end justify-between mb-2">
-                         <span className="text-sm text-zinc-300">They ask (Market Rate)</span>
+                         <span className="text-sm text-indigo-200">They ask (Market Rate)</span>
                          <span className="text-xl font-medium strikethrough decoration-white/50 opacity-70">${result.ml.pricing.marketRate.toLocaleString()}</span>
                      </div>
                      <div className="flex items-end justify-between mb-6">
@@ -290,7 +290,7 @@ export default function VettingPage() {
                              <div key={i} className="h-8 w-8 rounded-full border border-white/20" style={{backgroundColor: color}}></div>
                          ))}
                      </div>
-                     <p className="text-xs text-blue-200 mt-4">
+                     <p className="text-xs text-indigo-200 mt-4">
                         <Tag size={12} className="inline mr-1"/> 
                         Matched: {result.ml.aesthetic.matches.join(", ")}
                      </p>
@@ -344,7 +344,7 @@ export default function VettingPage() {
                    </Button>
                    <Link 
                      href={`/dashboard/campaigns?create=${encodeURIComponent(result.handle)}`}
-                     className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium text-center flex items-center justify-center gap-2 transition-colors"
+                     className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-medium text-center flex items-center justify-center gap-2 transition-colors"
                    >
                      <TrendingUp size={16} />
                      Launch Campaign Tracker
@@ -370,9 +370,9 @@ export default function VettingPage() {
                   <Line 
                     type="monotone" 
                     dataKey="followers" 
-                    stroke="#2563eb" 
+                    stroke="#4f46e5" 
                     strokeWidth={3} 
-                    dot={{r: 4, fill: '#2563eb', strokeWidth: 0}}
+                    dot={{r: 4, fill: '#4f46e5', strokeWidth: 0}}
                     activeDot={{r: 6, strokeWidth: 0}}
                   />
                 </LineChart>
