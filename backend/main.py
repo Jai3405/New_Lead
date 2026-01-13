@@ -161,20 +161,103 @@ def analyze_brand_fit(request: Request, body: BrandFitRequest):
     
     return {"score": score, "matches": list(intersection), "extracted_topics": list(extracted_topics)[:10]}
 
-# Re-implementing the missing Optimize Portfolio endpoint for AI Lab
+# --- REAL MATH HELPERS ---
+NICHES = {
+    "Tech": np.array([0.9, 0.1, 0.2]),
+    "Beauty": np.array([0.1, 0.9, 0.1]),
+    "Business": np.array([0.2, 0.2, 0.9]),
+    "General": np.array([0.5, 0.5, 0.5])
+}
+
 @app.post("/optimize-portfolio")
-@limiter.limit("3/minute") # Very heavy compute
+@limiter.limit("3/minute") # Very heavy compute, strictly rate limited
 def optimize_portfolio(request: Request, body: PortfolioRequest):
-    # Mocking the heavy math for security context example, assuming previous implementation logic
-    # In real implementation, this would use the Monte Carlo logic
     budget = body.budget
-    # ... (Monte Carlo Logic) ...
-    # Returning mock for safety demo
+    
+    # 1. Generate Candidates with REAL Vectors based on Niche
+    # This simulates a database lookup where every creator has a pre-computed embedding
+    candidates = [
+        {"handle": "@tech_guru", "cost": 12000, "reach": 500000, "niche": "Tech"},
+        {"handle": "@beauty_queen", "cost": 15000, "reach": 650000, "niche": "Beauty"},
+        {"handle": "@crypto_king", "cost": 18000, "reach": 400000, "niche": "Business"},
+        {"handle": "@lifestyle_zoe", "cost": 5000, "reach": 150000, "niche": "Beauty"},
+        {"handle": "@gaming_josh", "cost": 4000, "reach": 120000, "niche": "Tech"},
+        {"handle": "@startup_sarah", "cost": 7000, "reach": 200000, "niche": "Business"},
+        {"handle": "@micro_tech", "cost": 1500, "reach": 45000, "niche": "Tech"},
+        {"handle": "@micro_beauty", "cost": 1200, "reach": 38000, "niche": "Beauty"},
+    ]
+    
+    # Enrich with Vectors (+ small random noise for realism)
+    vectors = []
+    for c in candidates:
+        base_vector = NICHES.get(c["niche"], NICHES["General"])
+        noise = np.random.normal(0, 0.05, 3) # Add Gaussian noise
+        final_vector = np.clip(base_vector + noise, 0, 1)
+        vectors.append(final_vector)
+    
+    vectors = np.array(vectors)
+    
+    # 2. Compute Cosine Similarity Matrix (The "Overlap")
+    # Dot product of normalized vectors
+    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+    normalized = vectors / norms
+    similarity_matrix = np.dot(normalized, normalized.T)
+    
+    # 3. Monte Carlo Simulation (Real Execution)
+    results = []
+    
+    # Run 2000 simulations
+    for _ in range(2000):
+        # Random selection mask
+        mask = np.random.randint(0, 2, len(candidates))
+        if np.sum(mask) == 0: continue
+        
+        selected_indices = np.where(mask == 1)[0]
+        
+        # Calculate Cost
+        total_cost = sum([candidates[i]["cost"] for i in selected_indices])
+        if total_cost > budget: continue
+        if total_cost < (budget * 0.5): continue # Ignore portfolios that barely use budget
+        
+        # Calculate Unique Reach (Penalizing Overlap)
+        raw_reach = sum([candidates[i]["reach"] for i in selected_indices])
+        
+        overlap_penalty = 0
+        for i in selected_indices:
+            for j in selected_indices:
+                if i != j:
+                    # Penalty = Overlap % * Smaller Audience
+                    overlap = similarity_matrix[i][j]
+                    smaller_reach = min(candidates[i]["reach"], candidates[j]["reach"])
+                    overlap_penalty += (overlap * smaller_reach * 0.4) # 40% overlap impact factor
+        
+        unique_reach = int(max(0, raw_reach - overlap_penalty))
+        
+        results.append({
+            "indices": selected_indices.tolist(),
+            "cost": total_cost,
+            "reach": unique_reach,
+            "efficiency": unique_reach / (total_cost + 1)
+        })
+        
+    if not results:
+        # Fallback if budget is too low
+        return {"error": "Budget too low for any combination"}
+
+    # 4. Find Optimal Portfolio
+    results.sort(key=lambda x: x["reach"], reverse=True)
+    best = results[0]
+    
+    optimal_handles = [candidates[i]["handle"] for i in best["indices"]]
+    
+    # 5. Format Data for Frontend Chart
+    chart_data = [{"cost": r["cost"], "reach": r["reach"], "efficiency": r["efficiency"]} for r in results[:50]]
+    
     return {
-        "optimalMix": ["@tech_guru", "@lifestyle_emma"],
-        "totalCost": budget * 0.9,
-        "projectedReach": int(budget * 30),
-        "efficiencyScore": 25.5,
-        "overlapReduction": 32.0,
-        "chartData": []
+        "optimalMix": optimal_handles,
+        "totalCost": best["cost"],
+        "projectedReach": best["reach"],
+        "efficiencyScore": round(best["efficiency"], 2),
+        "overlapReduction": round((1 - (best["reach"] / sum([candidates[i]["reach"] for i in best["indices"]]))) * 100, 1),
+        "chartData": chart_data
     }

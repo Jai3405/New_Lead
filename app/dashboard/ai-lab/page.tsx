@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, CartesianGrid, Label } from 'recharts';
 import { toast } from "sonner";
+import { safeFetch } from "@/lib/api";
 
 export default function AILabPage() {
   const [budget, setBudget] = useState(50000);
@@ -16,36 +17,23 @@ export default function AILabPage() {
     e.preventDefault();
     setOptimizing(true);
     
-    try {
-        const response = await fetch('http://localhost:8000/optimize-portfolio', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ budget: budget }),
-        });
+    const data = await safeFetch<any>('/optimize-portfolio', { budget });
 
-        if (!response.ok) {
-            throw new Error("Backend Error");
-        }
-
-        const data = await response.json();
-        
-        if (data.error) {
-            toast.error(data.error);
-            setOptimizing(false);
-            return;
-        }
-
-        setResult(data);
-        toast.success("Optimization Complete: Efficient Frontier Calculated");
-
-    } catch (error) {
-        console.error(error);
-        toast.error("ML Engine Offline: Ensure 'python backend/main.py' is running on port 8000.");
-    } finally {
+    if (!data) {
+        toast.error("AI Lab Offline. Ensure Python backend is running.");
         setOptimizing(false);
+        return;
     }
+
+    if (data.error) {
+        toast.error(data.error);
+        setOptimizing(false);
+        return;
+    }
+
+    setResult(data);
+    toast.success("Efficient Frontier Calculated");
+    setOptimizing(false);
   };
 
   return (
@@ -94,7 +82,7 @@ export default function AILabPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
                     <p className="text-sm text-zinc-500 mb-1">Optimized Reach</p>
-                    <div className="text-3xl font-bold text-blue-600">{(result.projectedReach / 1000000).toFixed(2)}M</div>
+                    <div className="text-3xl font-bold text-indigo-600">{(result.projectedReach / 1000000).toFixed(2)}M</div>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
                     <p className="text-sm text-zinc-500 mb-1">Cost Efficiency</p>
@@ -118,7 +106,7 @@ export default function AILabPage() {
                 <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-semibold text-zinc-900 flex items-center gap-2">
-                            <ChartIcon size={20} className="text-blue-500"/> The Efficient Frontier
+                            <ChartIcon size={20} className="text-indigo-500"/> The Efficient Frontier
                         </h3>
                         <span className="text-xs bg-zinc-100 px-2 py-1 rounded text-zinc-500">Risk/Return Profile</span>
                     </div>
@@ -134,7 +122,7 @@ export default function AILabPage() {
                                 </YAxis>
                                 <ZAxis type="number" dataKey="efficiency" range={[50, 400]} name="Efficiency" />
                                 <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                                <Scatter name="Portfolios" data={result.chartData} fill="#2563eb" />
+                                <Scatter name="Portfolios" data={result.chartData} fill="#4f46e5" />
                             </ScatterChart>
                         </ResponsiveContainer>
                     </div>
@@ -158,7 +146,7 @@ export default function AILabPage() {
                             </div>
                         ))}
                     </div>
-                    <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700">
+                    <Button className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700">
                         Execute Trades (Book Creators)
                     </Button>
                 </div>

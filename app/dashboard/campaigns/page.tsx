@@ -65,7 +65,7 @@ function CampaignsList() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
               <Plus size={18} /> New Campaign
             </Button>
           </DialogTrigger>
@@ -140,70 +140,72 @@ function CampaignsList() {
 
       {/* Campaign List */}
       <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-zinc-50 border-b border-zinc-200">
-            <tr>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Campaign</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Budget Used</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">ROI</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Fraud Risk</th>
-              <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-100">
-            {campaigns.length === 0 ? (
-               <tr>
-                 <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                    No active campaigns. Start one to see data here.
-                 </td>
-               </tr>
-            ) : (
-              campaigns.map((campaign) => (
-                <tr key={campaign.id} className="hover:bg-zinc-50/50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <Link href={`/dashboard/campaigns/${campaign.id}`} className="block">
-                      <div className="font-medium text-zinc-900 group-hover:text-blue-600 transition-colors">{campaign.name}</div>
-                      <div className="text-sm text-zinc-500">{campaign.influencerHandle} • {campaign.platform}</div>
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4">
-                    <StatusBadge status={campaign.status} />
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-zinc-900">${campaign.spend.toLocaleString()}</div>
-                    <div className="text-xs text-zinc-500">of ${campaign.budget.toLocaleString()}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                     <div className="flex items-center gap-1 font-medium text-green-600">
-                       <ArrowUpRight size={16} />
-                       {campaign.spend > 0 ? ((campaign.revenue / campaign.spend) * 100).toFixed(0) : 0}%
-                     </div>
-                     <div className="text-xs text-zinc-500">${campaign.revenue.toLocaleString()} Rev</div>
-                  </td>
-                  <td className="px-6 py-4">
-                     {campaign.fraudScore > 50 ? (
-                       <div className="flex items-center gap-1.5 text-red-600 font-medium text-sm bg-red-50 px-2 py-1 rounded-full w-fit">
-                         <ShieldAlert size={14} />
-                         High ({campaign.fraudScore}%)
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-zinc-50 border-b border-zinc-200">
+              <tr>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Campaign</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Budget Used</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">ROI</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Fraud Risk</th>
+                <th className="px-6 py-4 text-xs font-semibold text-zinc-500 uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100">
+              {campaigns.length === 0 ? (
+                 <tr>
+                   <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                      No active campaigns. Start one to see data here.
+                   </td>
+                 </tr>
+              ) : (
+                campaigns.map((campaign) => (
+                  <tr key={campaign.id} className="hover:bg-zinc-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <Link href={`/dashboard/campaigns/${campaign.id}`} className="block">
+                        <div className="font-medium text-zinc-900 group-hover:text-indigo-600 transition-colors">{campaign.name}</div>
+                        <div className="text-sm text-zinc-500">{campaign.influencerHandle} • {campaign.platform}</div>
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4">
+                      <StatusBadge status={campaign.status} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-zinc-900">${campaign.spend.toLocaleString()}</div>
+                      <div className="text-xs text-zinc-500">of ${campaign.budget.toLocaleString()}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                       <div className="flex items-center gap-1 font-medium text-green-600">
+                         <ArrowUpRight size={16} />
+                         {campaign.spend > 0 ? ((campaign.revenue / campaign.spend) * 100).toFixed(0) : 0}%
                        </div>
-                     ) : (
-                       <div className="flex items-center gap-1.5 text-green-600 font-medium text-sm">
-                         <CheckCircle2 size={14} />
-                         Low ({campaign.fraudScore}%)
-                       </div>
-                     )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-600">
-                      <MoreHorizontal size={18} />
-                    </Button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                       <div className="text-xs text-zinc-500">${campaign.revenue.toLocaleString()} Rev</div>
+                    </td>
+                    <td className="px-6 py-4">
+                       {campaign.fraudScore > 50 ? (
+                         <div className="flex items-center gap-1.5 text-red-600 font-medium text-sm bg-red-50 px-2 py-1 rounded-full w-fit">
+                           <ShieldAlert size={14} />
+                           High ({campaign.fraudScore}%)
+                         </div>
+                       ) : (
+                         <div className="flex items-center gap-1.5 text-green-600 font-medium text-sm">
+                           <CheckCircle2 size={14} />
+                           Low ({campaign.fraudScore}%)
+                         </div>
+                       )}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-zinc-600">
+                        <MoreHorizontal size={18} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

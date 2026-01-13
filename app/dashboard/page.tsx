@@ -28,21 +28,21 @@ export default function DashboardPage() {
           value="$124,500" 
           change="+12.5%" 
           trend="up" 
-          icon={<DollarSign className="text-green-600" size={20} />} 
+          icon={<DollarSign className="text-indigo-600" size={20} />} 
         />
         <KpiCard 
           title="Active Campaigns" 
           value="8" 
           change="+2" 
           trend="up" 
-          icon={<Activity className="text-blue-600" size={20} />} 
+          icon={<Activity className="text-violet-600" size={20} />} 
         />
         <KpiCard 
           title="Avg. ROAS" 
           value="3.2x" 
           change="-0.4" 
           trend="down" 
-          icon={<BarChart3 className="text-purple-600" size={20} />} 
+          icon={<BarChart3 className="text-fuchsia-600" size={20} />} 
         />
         <KpiCard 
           title="Fraud Prevented" 
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                   cursor={{fill: '#f4f4f5'}}
                 />
                 <Bar dataKey="spend" name="Ad Spend" fill="#e4e4e7" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="revenue" name="Revenue" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" name="Revenue" fill="#4f46e5" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -108,7 +108,7 @@ export default function DashboardPage() {
                severity="high"
              />
              <div className="pt-4 mt-4 border-t border-zinc-100 text-center">
-               <button className="text-sm font-medium text-blue-600 hover:text-blue-700">View All Alerts</button>
+               <button className="text-sm font-medium text-indigo-600 hover:text-indigo-700">View All Alerts</button>
              </div>
            </div>
         </div>
