@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Search, LayoutDashboard, Settings, LogOut, Users, ShieldCheck, FileText, Swords, BrainCircuit } from "lucide-react";
+import { BarChart3, Search, LayoutDashboard, Settings, LogOut, Users, ShieldCheck, FileText, Swords, BrainCircuit, Beaker } from "lucide-react";
 import { CampaignProvider } from "@/context/campaign-context";
 import { Toaster } from "sonner";
 
@@ -15,10 +15,10 @@ export default function DashboardLayout({
         <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-zinc-200 hidden md:flex flex-col">
           <div className="h-16 flex items-center px-6 border-b border-zinc-100">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-                <BarChart3 size={18} strokeWidth={3} />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+                <Beaker size={18} strokeWidth={3} className="fill-white/20" />
               </div>
-              Prove It.
+              VITRO.
             </Link>
           </div>
           
