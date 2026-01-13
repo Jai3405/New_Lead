@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { BarChart3, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { CheckCircle, ArrowRight, Loader2, Beaker } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -29,10 +29,10 @@ export default function SignupPage() {
       <div className="hidden lg:flex flex-col justify-between bg-zinc-900 p-12 text-white">
         <div>
           <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight mb-12">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <BarChart3 size={18} strokeWidth={3} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+              <Beaker size={18} strokeWidth={3} className="fill-white/20"/>
             </div>
-            Prove It.
+            VITRO.
           </Link>
           <div className="space-y-6 max-w-lg">
             <h1 className="text-4xl font-bold leading-tight">
@@ -64,7 +64,7 @@ export default function SignupPage() {
       <div className="flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md space-y-8">
            <div className="text-center lg:text-left">
-             <h2 className="text-2xl font-bold text-zinc-900">Get started with Prove It</h2>
+             <h2 className="text-2xl font-bold text-zinc-900">Get started with VITRO</h2>
              <p className="text-zinc-500 mt-2">Start vetting creators and tracking ROI in minutes.</p>
            </div>
 
@@ -92,7 +92,7 @@ export default function SignupPage() {
                </div>
              </div>
 
-             <Button type="submit" disabled={isLoading} className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-lg">
+             <Button type="submit" disabled={isLoading} className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-lg">
                {isLoading ? (
                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</>
                ) : (
@@ -113,7 +113,7 @@ export default function SignupPage() {
            </div>
 
            <p className="text-center text-sm text-zinc-500">
-             Already have an account? <Link href="/login" className="text-blue-600 hover:underline font-medium">Log in</Link>
+             Already have an account? <Link href="/login" className="text-indigo-600 hover:underline font-medium">Log in</Link>
            </p>
         </div>
       </div>
