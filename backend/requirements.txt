@@ -6,3 +6,5 @@ scikit-learn
 scipy
 textblob
 pydantic
+slowapi
+python-dotenv

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, CartesianGrid, Legend, ReferenceLine } from 'recharts';
 import Link from "next/link";
 import { toast } from "sonner";
+import { safeFetch } from "@/lib/api";
 
 export default function VettingPage() {
   const [handle, setHandle] = useState("");
@@ -18,99 +19,66 @@ export default function VettingPage() {
     
     setAnalyzing(true);
     
-    // 1. DATA COLLECTION (Simulating scraping raw data from Instagram)
-    // In production, this would be a backend call to the Instagram Graph API.
-    // Here, we generate the *Raw Data* to send to our ML Engine.
+    // 1. DATA COLLECTION
     const rawMetrics = Array.from({length: 100}, () => Math.floor(Math.random() * 4000) + 4000); 
     const rawComments = ["Nice pic!", "Nice pic!", "Love it", "Great", "Nice pic!", "🔥", "🔥", "🔥", "Beauty", "Nice pic!", "Where is this?", "Link?", "Wow"];
     const rawCaptions = ["Loving this summer vibe #ad", "Coffee time", "New outfit from @brand", "Travel diaries"];
     const brandKeywords = ['Minimalist', 'Sustainable', 'Luxury', 'Neutral'];
 
-    try {
-        // 2. SEND TO PYTHON ML ENGINE
-        // We perform 3 parallel requests to our microservices
-        
-        const [forensicRes, priceRes, fitRes] = await Promise.all([
-            fetch('http://localhost:8000/analyze/forensics', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ metrics: rawMetrics, comments: rawComments })
-            }),
-            fetch('http://localhost:8000/predict/price', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    reach: 35000, 
-                    engagement_rate: 1.2, 
-                    fraud_score: 72,
-                    niche: 'Fashion'
-                })
-            }),
-            fetch('http://localhost:8000/analyze/brand-fit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    influencer_bio: "Fashion | Travel | Life", 
-                    recent_captions: rawCaptions, 
-                    brand_keywords: brandKeywords 
-                })
-            })
-        ]);
+    // 2. SECURE API CALLS
+    const [forensicData, priceData, fitData] = await Promise.all([
+        safeFetch<any>('/analyze/forensics', { metrics: rawMetrics, comments: rawComments }),
+        safeFetch<any>('/predict/price', { reach: 35000, engagement_rate: 1.2, fraud_score: 72, niche: 'Fashion' }),
+        safeFetch<any>('/analyze/brand-fit', { influencer_bio: "Fashion | Travel | Life", recent_captions: rawCaptions, brand_keywords: brandKeywords })
+    ]);
 
-        if (!forensicRes.ok || !priceRes.ok || !fitRes.ok) {
-            throw new Error("One or more ML services failed");
-        }
-
-        const forensicData = await forensicRes.json();
-        const priceData = await priceRes.json();
-        const fitData = await fitRes.json();
-
-        // 3. COMPILE RESULTS
-        setResult({
-            handle: handle.startsWith('@') ? handle : `@${handle}`,
-            followers: "125K",
-            fraudScore: 72, 
-            audienceQuality: 28, 
-            realFollowers: 35000,
-            fakeFollowers: 90000,
-            engagementRate: "1.2%",
-            avgLikes: "1,500",
-            flags: ["Benford's Law Violation", "Low Entropy Comments (Bots)", "Engagement Pods"],
-            growthData: [
-                { month: 'Jan', followers: 45000 },
-                { month: 'Feb', followers: 46000 },
-                { month: 'Mar', followers: 47000 },
-                { month: 'Apr', followers: 47500 },
-                { month: 'May', followers: 120000 },
-                { month: 'Jun', followers: 125000 },
-            ],
-            forensics: {
-                benfordChartData: forensicData.benford.chart_data,
-                benfordSuspicious: forensicData.benford.is_suspicious,
-                entropyScore: forensicData.entropy.score,
-                entropyVerdict: forensicData.entropy.verdict
-            },
-            ml: {
-                pricing: {
-                    estimatedPrice: priceData.estimated_price,
-                    marketRate: priceData.market_rate,
-                    valuation: priceData.valuation
-                },
-                aesthetic: {
-                    score: fitData.score,
-                    matches: fitData.matches,
-                    palette: ['#F5F5F0', '#2A2A2A', '#D4A373', '#CCD5AE'] // Palette extraction requires OpenCV, keeping mock for UI
-                }
-            }
-        });
-        toast.success("Analysis Complete: ML Models Executed");
-
-    } catch (error) {
-        console.error(error);
-        toast.error("ML Engine Offline: Ensure 'python backend/main.py' is running on port 8000.");
-    } finally {
+    if (!forensicData || !priceData || !fitData) {
+        toast.error("ML Engine Unavailable (Check connection or Rate Limit)");
         setAnalyzing(false);
+        return;
     }
+
+    // 3. COMPILE RESULTS
+    setResult({
+        handle: handle.startsWith('@') ? handle : `@${handle}`,
+        followers: "125K",
+        fraudScore: 72, 
+        audienceQuality: 28, 
+        realFollowers: 35000,
+        fakeFollowers: 90000,
+        engagementRate: "1.2%",
+        avgLikes: "1,500",
+        flags: ["Benford's Law Violation", "Low Entropy Comments (Bots)", "Engagement Pods"],
+        growthData: [
+            { month: 'Jan', followers: 45000 },
+            { month: 'Feb', followers: 46000 },
+            { month: 'Mar', followers: 47000 },
+            { month: 'Apr', followers: 47500 },
+            { month: 'May', followers: 120000 },
+            { month: 'Jun', followers: 125000 },
+        ],
+        forensics: {
+            benfordChartData: forensicData.benford.chart_data,
+            benfordSuspicious: forensicData.benford.is_suspicious,
+            entropyScore: forensicData.entropy.score,
+            entropyVerdict: forensicData.entropy.verdict
+        },
+        ml: {
+            pricing: {
+                estimatedPrice: priceData.estimated_price,
+                marketRate: priceData.market_rate,
+                valuation: priceData.valuation
+            },
+            aesthetic: {
+                score: fitData.score,
+                matches: fitData.matches,
+                palette: ['#F5F5F0', '#2A2A2A', '#D4A373', '#CCD5AE']
+            }
+        }
+    });
+    
+    setAnalyzing(false);
+    toast.success("Analysis Complete");
   };
 
   const data = [
